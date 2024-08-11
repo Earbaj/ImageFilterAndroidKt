@@ -56,6 +56,8 @@ dependencies {
     //Gpu Image
     implementation("jp.co.cyberagent.android:gpuimage:2.1.0")
 
+    implementation("io.insert-koin:koin-android:3.1.2")
+
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
 
