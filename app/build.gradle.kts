@@ -46,6 +46,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
+
     // For SDP,SSP, use this:
     implementation("com.intuit.sdp:sdp-android:1.0.6")
     implementation("com.intuit.ssp:ssp-android:1.0.6")
@@ -57,6 +58,8 @@ dependencies {
     implementation("jp.co.cyberagent.android:gpuimage:2.1.0")
 
     implementation("io.insert-koin:koin-android:3.1.2")
+    implementation("io.insert-koin:koin-core")
+    implementation("io.insert-koin:koin-android")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
