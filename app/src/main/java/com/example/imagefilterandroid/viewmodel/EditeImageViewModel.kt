@@ -5,11 +5,14 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.imagefilterandroid.data.ImageFilter
+import com.example.imagefilterandroid.data.ImageFilterDataState
 import com.example.imagefilterandroid.data.ImagePreviewDataState
 import com.example.imagefilterandroid.repository.EditeImageRepository
 import com.example.imagefilterandroid.utils.Coroutines
 
 class EditeImageViewModel(private val editeImageRepository: EditeImageRepository) : ViewModel() {
+
     private val imagePreviewDataState = MutableLiveData<ImagePreviewDataState>()
     val imagePreviewUiState: LiveData<ImagePreviewDataState> get() = imagePreviewDataState
 
@@ -38,5 +41,40 @@ class EditeImageViewModel(private val editeImageRepository: EditeImageRepository
     ){
         val dataState = ImagePreviewDataState(isLoading,bitmap, error)
         imagePreviewDataState.postValue(dataState)
+    }
+
+    private val imageFilterDataState = MutableLiveData<ImageFilterDataState>()
+    val imageFilterUiState: LiveData<ImageFilterDataState> get() = imageFilterDataState
+
+    fun loadImageFilters(orginalImage: Bitmap){
+        Coroutines.io {
+            runCatching {
+                editImageFiltersUiState(isLoading = true)
+                editeImageRepository.getImageFilters(getPreviewImage(orginalImage))
+            }.onSuccess { imageFilters ->
+                editImageFiltersUiState(imageFilters = imageFilters)
+            }.onFailure {
+                editImageFiltersUiState(error = it.message.toString())
+            }
+        }
+    }
+
+
+    private fun getPreviewImage(orginalImage: Bitmap): Bitmap{
+        return runCatching {
+            val previewWidth = 150
+            val previewHeight = orginalImage.height * previewWidth/orginalImage.width
+            Bitmap.createScaledBitmap(orginalImage,previewWidth,previewHeight,false)
+        }.getOrDefault(orginalImage)
+    }
+
+
+    private fun editImageFiltersUiState(
+        isLoading:Boolean = false,
+        imageFilters: List<ImageFilter>? = null,
+        error: String? = null
+    ){
+        val dataState = ImageFilterDataState(isLoading, imageFilters,error)
+        imageFilterDataState.postValue(dataState)
     }
 }
