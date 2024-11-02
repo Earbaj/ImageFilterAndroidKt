@@ -1,13 +1,12 @@
 package com.example.imagefilterandroid.ui
 
-import android.graphics.BitmapFactory
+
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModel
 import com.example.imagefilterandroid.MainActivity
-import com.example.imagefilterandroid.R
+import com.example.imagefilterandroid.adapter.ImageFilterAdapter
 import com.example.imagefilterandroid.databinding.ActivityEditeImageBinding
 import com.example.imagefilterandroid.utils.displayToast
 import com.example.imagefilterandroid.utils.show
@@ -38,6 +37,7 @@ class EditeImageActivity : AppCompatActivity() {
                 datastate.bitmap?.let { bitmap ->
                     binding.imagePreview.setImageBitmap(bitmap)
                     binding.imagePreview.show()
+                    viewModel.loadImageFilters(bitmap)
                 } ?: kotlin.run {
                     datastate.error?.let { error ->
                         displayToast(error)
@@ -45,6 +45,19 @@ class EditeImageActivity : AppCompatActivity() {
                 }
             }
         )
+        viewModel.imageFilterUiState.observe(this, {
+            val imageFiltersDataState = it ?: return@observe
+            binding.imageFiltersProgressBar.visibility = if (imageFiltersDataState.isLoading) View.VISIBLE else View.GONE
+            imageFiltersDataState.imageFilters?.let { imageFilters ->
+                ImageFilterAdapter(imageFilters).also { adapter ->
+                    binding.filterRecyclerView.adapter = adapter
+                }
+            } ?: kotlin.run {
+                imageFiltersDataState.error?.let { error ->
+                    displayToast(error)
+                }
+            }
+        })
     }
 
     private fun prepareImagePreview(){
@@ -53,14 +66,6 @@ class EditeImageActivity : AppCompatActivity() {
         }
     }
 
-//    private fun displayImagePreview() {
-//        intent.getParcelableExtra<Uri>(MainActivity.KEY_IMAGE_URI)?.let { imageUri ->
-//            val inputStream = contentResolver.openInputStream(imageUri)
-//            val bitmap = BitmapFactory.decodeStream(inputStream)
-//            binding.imagePreview.setImageBitmap(bitmap)
-//            binding.imagePreview.visibility = View.VISIBLE
-//        }
-//    }
 
     private fun setListeners() {
         binding.imageBack.setOnClickListener {
