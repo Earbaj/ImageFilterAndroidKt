@@ -5,8 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.imagefilterandroid.data.ImageFilter
 import com.example.imagefilterandroid.databinding.ItemContainerFilterBinding
+import com.example.imagefilterandroid.listeners.ImageFilterListener
 
-class ImageFilterAdapter(private val imageFilters: List<ImageFilter>) :
+class ImageFilterAdapter(
+    private val imageFilters: List<ImageFilter>,
+    private val imageFilterListener: ImageFilterListener
+) :
 RecyclerView.Adapter<ImageFilterAdapter.ImageFilterViewHolder>() {
 
     inner class ImageFilterViewHolder(val binding: ItemContainerFilterBinding) :
@@ -28,6 +32,9 @@ RecyclerView.Adapter<ImageFilterAdapter.ImageFilterViewHolder>() {
             with(imageFilters[position]){
                 binding.imageFilterPreview.setImageBitmap(filterPreview)
                 binding.textFilterName.text = name
+                binding.root.setOnClickListener{
+                    imageFilterListener.onFilterSelected(this)
+                }
             }
         }
     }
