@@ -92,6 +92,14 @@ class EditeImageActivity : AppCompatActivity(),ImageFilterListener {
         binding.imageBack.setOnClickListener {
             onBackPressed()
         }
+
+        binding.imagePreview.setOnLongClickListener {
+            binding.imagePreview.setImageBitmap(orginaImageBitmap)
+            return@setOnLongClickListener false
+        }
+        binding.imagePreview.setOnClickListener {
+            binding.imagePreview.setImageBitmap(filteredBitmap.value)
+        }
     }
 
     override fun onFilterSelected(imageFilter: ImageFilter) {
