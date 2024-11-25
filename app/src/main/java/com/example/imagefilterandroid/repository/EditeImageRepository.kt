@@ -7,4 +7,5 @@ import com.example.imagefilterandroid.data.ImageFilter
 interface EditeImageRepository {
     suspend fun prepareImagePreview(imageUri: Uri): Bitmap?
     suspend fun getImageFilters(image: Bitmap) : List<ImageFilter>
+    suspend fun saveFilteredImage(filteredBitmap: Bitmap): Uri?
 }
