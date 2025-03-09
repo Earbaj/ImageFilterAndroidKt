@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.imagefilterandroid.MainActivity
 import com.example.imagefilterandroid.adapter.ImageFilterAdapter
@@ -126,8 +127,15 @@ class EditeImageActivity : AppCompatActivity(),ImageFilterListener {
 
         binding.imageSave.setOnClickListener {
             filteredBitmap.value?.let { bitmap ->
-                Log.d("Image bitmap","${bitmap.toString()}")
-                viewModel.saveFilteredImage(applicationContext,bitmap)
+                val imageUri = viewModel.saveFilteredImage(applicationContext,bitmap)
+                imageUri?.let {
+                    // Intent to open PreviewImageActivity
+                    val previewIntent = Intent(this, FilteredImageActivity::class.java)
+                    previewIntent.putExtra("imageUri", it)  // Pass the URI
+                    startActivity(previewIntent)
+                } ?: run {
+                    Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 

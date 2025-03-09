@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -98,6 +99,7 @@ class EditeImageViewModel(private val editeImageRepository: EditeImageRepository
             outputStream.flush()
             outputStream.close()
 
+            Toast.makeText(context, "Image saved", Toast.LENGTH_SHORT).show()
             Log.d("SaveImageRepository", "Image saved at: ${file.absolutePath}")
             return Uri.fromFile(file)  // Return the URI of the saved file
         } catch (e: Exception) {
