@@ -1,15 +1,23 @@
 package com.example.imagefilterandroid.viewmodel
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Environment
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.imagefilterandroid.data.ImageFilter
 import com.example.imagefilterandroid.data.ImageFilterDataState
 import com.example.imagefilterandroid.data.ImagePreviewDataState
 import com.example.imagefilterandroid.repository.EditeImageRepository
 import com.example.imagefilterandroid.utils.Coroutines
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 
 class EditeImageViewModel(private val editeImageRepository: EditeImageRepository) : ViewModel() {
 
@@ -82,18 +90,50 @@ class EditeImageViewModel(private val editeImageRepository: EditeImageRepository
     val saveFilteredImageUiState: LiveData<SaveFilteredImageDataState> get() = saveFilteredImageDataState
 
 
-    fun saveFilteredImage(filteredBitmap: Bitmap){
-        Coroutines.io{
-            runCatching {
-                emitSaveFilteredImageUiState(isLoading = true)
-                editeImageRepository.saveFilteredImage(filteredBitmap)
-            }.onSuccess {  saveImageUri ->
-                emitSaveFilteredImageUiState(uri = saveImageUri)
-            }.onFailure {
-                emitSaveFilteredImageUiState(error = it.message.toString())
-            }
+    fun saveFilteredImage(context: Context, filteredBitmap: Bitmap): Uri? {
+        try {
+            val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "filtered_image.png")
+            val outputStream = FileOutputStream(file)
+            filteredBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+
+            Log.d("SaveImageRepository", "Image saved at: ${file.absolutePath}")
+            return Uri.fromFile(file)  // Return the URI of the saved file
+        } catch (e: Exception) {
+            Log.e("SaveImageRepository", "Error saving image: ${e.message}", e)
+            return null
         }
     }
+
+
+
+//    fun saveFilteredImage(filteredBitmap: Bitmap) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            runCatching {
+//                Log.d("SaveImageDebug", "Starting image save process...")
+//                emitSaveFilteredImageUiState(isLoading = true)
+//                val saveImageUri = editeImageRepository.saveFilteredImage(filteredBitmap) // Call the suspend function
+//                Log.d("SaveImageDebug", "Received URI from Repository: $saveImageUri")
+//                saveImageUri
+//            }.onSuccess { saveImageUri ->
+//                if (saveImageUri != null) {
+//                    Log.d("SaveImageDebug", "Image successfully saved: $saveImageUri")
+//                    emitSaveFilteredImageUiState(uri = saveImageUri)
+//                } else {
+//                    Log.e("SaveImageDebug", "Failed to save image: URI is null")
+//                    emitSaveFilteredImageUiState(error = "Failed to save image: URI is null")
+//                }
+//            }.onFailure { exception ->
+//                Log.e("SaveImageDebug", "Error saving image: ${exception.message}", exception)
+//                emitSaveFilteredImageUiState(error = exception.message ?: "An unknown error occurred")
+//            }
+//        }
+//    }
+
+
+
+
 
     private fun emitSaveFilteredImageUiState(
         isLoading: Boolean = false,

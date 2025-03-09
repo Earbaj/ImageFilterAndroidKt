@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.example.imagefilterandroid.MainActivity
@@ -102,11 +103,11 @@ class EditeImageActivity : AppCompatActivity(),ImageFilterListener {
                     filteredImageIntent.putExtra(KEY_FILTERED_IMAGE_URI, saveImageUri)
                     startActivity(filteredImageIntent)
                 }
-            } ?: kotlin.run{
-                saveFilteredImageDataState.error.let { error ->
-                    displayToast(error)
-                }
+            } ?: kotlin.run {
+                Log.e("SaveImageError", "Error: ${saveFilteredImageDataState.error}")
+                displayToast(saveFilteredImageDataState.error ?: "Unknown error occurred")
             }
+
         })
     }
 
@@ -125,7 +126,8 @@ class EditeImageActivity : AppCompatActivity(),ImageFilterListener {
 
         binding.imageSave.setOnClickListener {
             filteredBitmap.value?.let { bitmap ->
-                viewModel.saveFilteredImage(bitmap)
+                Log.d("Image bitmap","${bitmap.toString()}")
+                viewModel.saveFilteredImage(applicationContext,bitmap)
             }
         }
 
