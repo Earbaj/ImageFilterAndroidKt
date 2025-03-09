@@ -9,67 +9,77 @@
 
     <LinearLayout
         android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
         android:background="#467FAC"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/_8sdp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
 
             android:id="@+id/imageBack"
-            android:tint="#FFFFFF"
-            android:src="@drawable/ic_back"
             android:layout_width="@dimen/_22sdp"
-            android:layout_height="@dimen/_22sdp"/>
+            android:layout_height="@dimen/_22sdp"
+            android:src="@drawable/ic_back"
+            android:tint="#FFFFFF" />
 
         <TextView
-            android:layout_marginStart="@dimen/_8sdp"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_8sdp"
             android:layout_weight="1"
             android:fontFamily="@font/s"
             android:includeFontPadding="false"
             android:text="Apply Filter"
             android:textColor="#FFFFFF"
-            android:textSize="@dimen/_14ssp"
-            android:layout_height="wrap_content"
-        />
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/_22sdp"
-            android:layout_height="@dimen/_22sdp"
-            android:id="@+id/imageSave"
-            android:src="@drawable/ic_done"
-            android:tint="#FFFFFF"
-            />
+            android:textSize="@dimen/_14ssp" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageSave"
+                android:layout_width="@dimen/_22sdp"
+                android:layout_height="@dimen/_22sdp"
+                android:src="@drawable/ic_done"
+                android:tint="#FFFFFF" />
+
+            <ProgressBar
+                android:id="@+id/savingProgressBar"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:visibility="gone" />
+        </FrameLayout>
+
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imagePreview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/imagePreview"
         android:scaleType="centerCrop"
         android:visibility="invisible"
-        tools:src="@drawable/landing_image"
         app:layout_constraintBottom_toTopOf="@id/filterRecyclerView"
         app:layout_constraintTop_toBottomOf="@id/layoutHeader"
-        />
-    
+        tools:src="@drawable/landing_image" />
+
     <ProgressBar
-        app:layout_constraintTop_toTopOf="@+id/imagePreview"
-        app:layout_constraintStart_toStartOf="@+id/imagePreview"
-        app:layout_constraintEnd_toEndOf="@+id/imagePreview"
-        app:layout_constraintBottom_toBottomOf="@+id/imagePreview"
         android:id="@+id/previewProgressBar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/imagePreview"
+        app:layout_constraintEnd_toEndOf="@+id/imagePreview"
+        app:layout_constraintStart_toStartOf="@+id/imagePreview"
+        app:layout_constraintTop_toTopOf="@+id/imagePreview" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/filterRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_105sdp"
-        android:id="@+id/filterRecyclerView"
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingStart="0dp"
@@ -80,17 +90,16 @@
         android:paddingBottom="@dimen/_8sdp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/item_container_filter"
-        />
+        tools:listitem="@layout/item_container_filter" />
 
     <ProgressBar
         android:id="@+id/imageFiltersProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/filterRecyclerView"
         app:layout_constraintEnd_toEndOf="@id/filterRecyclerView"
         app:layout_constraintStart_toStartOf="@id/filterRecyclerView"
-        app:layout_constraintTop_toTopOf="@id/filterRecyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintTop_toTopOf="@id/filterRecyclerView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
